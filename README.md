@@ -1,71 +1,139 @@
-# Getting Started with Create React App
+# Front-likelion
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React 기반 커뮤니티 플랫폼 프론트엔드
 
-## Available Scripts
+## 기술 스택
 
-In the project directory, you can run:
+- **React** 18.2.0
+- **React Router** 6.23.0
+- **Axios** 1.7.2
+- **Create React App** 5.0.1
 
-### `npm start`
+## 프로젝트 구조
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+src/
+├── api/                    # API 서비스 계층
+│   ├── axiosInstance.js    # Axios 인스턴스 (인터셉터, 토큰 자동 갱신)
+│   ├── authApi.js          # 인증 API (로그인, 회원가입)
+│   ├── postApi.js          # 게시글 API (CRUD, 좋아요)
+│   ├── commentApi.js       # 댓글 API (CRUD, 대댓글)
+│   └── meetingApi.js       # 모임 API (목록, 생성, 참여)
+├── contexts/
+│   └── AuthContext.js      # 인증 상태 관리 (Context API)
+├── components/
+│   ├── Header/             # 상단 네비게이션 바
+│   ├── ProtectedRoute/     # 인증 필요 라우트 보호
+│   ├── PostCard/           # 게시글 미리보기 카드
+│   ├── MeetingCard/        # 모임 미리보기 카드
+│   ├── Comment/            # 댓글/대댓글 섹션
+│   └── Category/           # 카테고리 필터 버튼
+├── pages/
+│   ├── Auth/               # 로그인, 회원가입
+│   ├── Home/               # 메인 (게시글 목록)
+│   ├── Post/               # 게시글 상세, 작성, 수정
+│   └── Group/              # 모임 목록, 상세, 생성
+├── App.js                  # 라우팅 설정
+└── index.js                # 진입점
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 페이지 및 라우팅
 
-### `npm test`
+| 경로 | 페이지 | 인증 필요 | 설명 |
+|------|--------|:---------:|------|
+| `/login` | Login | - | 로그인 |
+| `/signup` | Signup | - | 회원가입 |
+| `/` | Main | O | 게시글 목록 (페이지네이션) |
+| `/post/new` | PostCreate | O | 게시글 작성 |
+| `/post/:id` | PostDetail | O | 게시글 상세 (댓글, 좋아요) |
+| `/post/:id/edit` | PostEdit | O | 게시글 수정 |
+| `/group` | Total | O | 모임 목록 (카테고리 필터) |
+| `/group/new` | MeetingCreate | O | 모임 생성 |
+| `/group/:meetingId` | MeetingDetail | O | 모임 상세 |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 주요 기능
 
-### `npm run build`
+### 인증
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- JWT 기반 로그인/로그아웃
+- Access Token 만료 시 Refresh Token으로 자동 갱신
+- 토큰은 localStorage에 저장
+- 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 게시글
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- 게시글 목록 조회 (페이지네이션)
+- 게시글 작성, 수정, 삭제 (작성자만)
+- 좋아요 / 좋아요 취소
 
-### `npm run eject`
+### 댓글
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- 댓글 작성 및 삭제
+- 대댓글 (답글) 기능
+- 스레드 형태의 댓글 트리 표시
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 모임
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- 모임 목록 조회 (페이지네이션)
+- 8개 카테고리 필터 (신체, 감정, 사회, 영적, 학습, 환경, 경제, 직업)
+- 모임 생성 (제목, 카테고리, 요일, 시간, 인원 제한, 설명)
+- 모임 참여
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 시작하기
 
-## Learn More
+### 사전 요구사항
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Node.js 18+
+- npm 9+
+- 백엔드 서버 실행 중 (`http://localhost:8080`)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 설치 및 실행
 
-### Code Splitting
+```bash
+# 의존성 설치
+npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+# 개발 서버 실행
+npm start
+```
 
-### Analyzing the Bundle Size
+개발 서버는 `http://localhost:3000`에서 실행됩니다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 환경 변수
 
-### Making a Progressive Web App
+프로젝트 루트에 `.env` 파일을 생성하여 API 서버 주소를 변경할 수 있습니다:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```env
+REACT_APP_API_URL=http://localhost:8080
+```
 
-### Advanced Configuration
+### 프로덕션 빌드
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+npm run build
+```
 
-### Deployment
+`build/` 폴더에 최적화된 정적 파일이 생성됩니다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## API 연동
 
-### `npm run build` fails to minify
+백엔드(`Back-likelion`)와 연동되며, 주요 API 호출은 다음과 같습니다:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# woodong-front
+| 기능 | Method | 엔드포인트 |
+|------|--------|-----------|
+| 로그인 | POST | `/login` |
+| 회원가입 | POST | `/api/signUp` |
+| 내 정보 | GET | `/api/member` |
+| 게시글 목록 | GET | `/api/post` |
+| 게시글 상세 | GET | `/api/post/{id}` |
+| 게시글 작성 | POST | `/api/post` |
+| 게시글 수정 | PUT | `/api/post/{id}` |
+| 게시글 삭제 | DELETE | `/api/post/{id}` |
+| 좋아요 | POST | `/api/post/{id}/like` |
+| 좋아요 취소 | DELETE | `/api/post/{id}/like` |
+| 댓글 작성 | POST | `/api/post/{id}/comment/{commentId}` |
+| 댓글 삭제 | DELETE | `/api/comment/{id}` |
+| 모임 목록 | GET | `/api/meeting` |
+| 모임 상세 | GET | `/api/meeting/{id}` |
+| 모임 생성 | POST | `/api/meeting` |
+| 모임 참여 | POST | `/api/meeting/{id}` |
