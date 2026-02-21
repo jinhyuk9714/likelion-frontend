@@ -21,6 +21,21 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Token refresh race condition prevention
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 // Response interceptor: handle 401 with token refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -28,7 +43,17 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then((token) => {
+          originalRequest.headers['Authorization'] = `Bearer ${token}`;
+          return axiosInstance(originalRequest);
+        });
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
       const refreshToken = localStorage.getItem('refreshToken');
 
       if (refreshToken) {
@@ -41,16 +66,21 @@ axiosInstance.interceptors.response.use(
           if (newAccessToken) {
             localStorage.setItem('accessToken', newAccessToken);
             originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+            processQueue(null, newAccessToken);
             return axiosInstance(originalRequest);
           }
         } catch (refreshError) {
+          processQueue(refreshError, null);
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           window.location.href = '/login';
           return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
         }
       }
 
+      isRefreshing = false;
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       window.location.href = '/login';

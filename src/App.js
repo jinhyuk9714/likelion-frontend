@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header/header";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
@@ -13,6 +13,7 @@ import MeetingCreate from "./pages/Group/MeetingCreate";
 import PostDetail from "./pages/Post/PostDetail";
 import PostCreate from "./pages/Post/PostCreate";
 import PostEdit from "./pages/Post/PostEdit";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   const { isAuthenticated } = useContext(AuthContext);
@@ -23,9 +24,9 @@ function App() {
     <div className="web">
       {isAuthenticated && !hideHeader && <Header />}
       <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* Public routes — redirect to home if already logged in */}
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/signup" element={isAuthenticated ? <Navigate to="/" replace /> : <Signup />} />
 
         {/* Protected routes */}
         <Route path="/" element={<ProtectedRoute><Main /></ProtectedRoute>} />
@@ -35,6 +36,9 @@ function App() {
         <Route path="/group" element={<ProtectedRoute><Total /></ProtectedRoute>} />
         <Route path="/group/new" element={<ProtectedRoute><MeetingCreate /></ProtectedRoute>} />
         <Route path="/group/:meetingId" element={<ProtectedRoute><MeetingDetail /></ProtectedRoute>} />
+
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
