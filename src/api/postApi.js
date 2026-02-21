@@ -12,9 +12,7 @@ export const postApi = {
 
   delete: (id) => axiosInstance.delete(`/api/post/${id}`),
 
-  like: (id, memberId) =>
-    axiosInstance.post(`/api/post/${id}/like`, { memberId }),
+  like: (id) => axiosInstance.post(`/api/post/${id}/like`),
 
-  unlike: (id, memberId) =>
-    axiosInstance.delete(`/api/post/${id}/like`, { data: { memberId } }),
+  unlike: (id) => axiosInstance.delete(`/api/post/${id}/like`),
 };

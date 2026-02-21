@@ -30,7 +30,7 @@ export default function PostDetail() {
 
   const handleLike = async () => {
     try {
-      await postApi.like(id, user.id);
+      await postApi.like(id);
       fetchPost();
     } catch (err) {
       alert(err.response?.data?.message || '좋아요에 실패했습니다.');
@@ -39,7 +39,7 @@ export default function PostDetail() {
 
   const handleUnlike = async () => {
     try {
-      await postApi.unlike(id, user.id);
+      await postApi.unlike(id);
       fetchPost();
     } catch (err) {
       alert(err.response?.data?.message || '좋아요 취소에 실패했습니다.');
