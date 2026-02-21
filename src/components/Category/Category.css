@@ -1,0 +1,40 @@
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Pretendard Variable', sans-serif;
+}
+
+.category-item:hover {
+  background: #e9ecef;
+}
+
+.category-item.selected {
+  border-color: #4a90d9;
+  background: #e8f0fe;
+}
+
+.category-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.category-label {
+  font-size: 0.75rem;
+  color: #333;
+  font-weight: 500;
+}

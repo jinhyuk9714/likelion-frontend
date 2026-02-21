@@ -1,41 +1,72 @@
-// import Container from "react-bootstrap/Container";
-// import Navbar from "react-bootstrap/Navbar";
-// import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-// import map1 from "./map_1.png";
-// import map_flag from "./map_flag.png";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { postApi } from '../../api/postApi';
+import PostCard from '../../components/PostCard/PostCard';
+import './Main.css';
 
-// export default function Main() {
-//   return (
-//     <div>
-//       <Navbar className="bg-body-tertiary">
-//         <Container>
-//           <Navbar.Brand className="name">
-//             <h3>현재 우리동네</h3>
-//           </Navbar.Brand>
-//           <Navbar.Brand className="name">
-//             <img src={map_flag} alt="위치" />
-//             <h1>부천시 원미구 역곡2동</h1>
-//           </Navbar.Brand>
-//         </Container>
-//       </Navbar>
-//       <br />
-//       <TransformWrapper initialScale={1} minScale={1} maxScale={10}>
-//         <TransformComponent>
-//           <figure>
-//             <img src={map1} alt="map1" className="map" />
-//           </figure>
-//         </TransformComponent>
-//       </TransformWrapper>
-//     </div>
-//   );
-// }
-import React from "react";
-function Main() {
+export default function Main() {
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const response = await postApi.getList(page);
+        const data = response.data.data;
+        setPosts(data.content || []);
+        setTotalPages(data.totalPages || 0);
+      } catch (err) {
+        console.error('게시글 목록 로드 실패:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [page]);
+
   return (
-    <div>
-      <h1>Main</h1>
+    <div className="main-page">
+      <div className="page-header">
+        <h2 className="page-title">게시글</h2>
+      </div>
+
+      {loading ? (
+        <p className="loading-text">로딩 중...</p>
+      ) : posts.length === 0 ? (
+        <p className="empty-text">게시글이 없습니다.</p>
+      ) : (
+        <div className="post-list">
+          {posts.map((post) => (
+            <PostCard key={post.id} {...post} />
+          ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            onClick={() => setPage(page - 1)}
+            disabled={page === 0}
+          >
+            이전
+          </button>
+          <span className="page-info">{page + 1} / {totalPages}</span>
+          <button
+            className="page-btn"
+            onClick={() => setPage(page + 1)}
+            disabled={page >= totalPages - 1}
+          >
+            다음
+          </button>
+        </div>
+      )}
+
+      <button className="fab" onClick={() => navigate('/post/new')}>+</button>
     </div>
   );
 }
-
-export default Main;
