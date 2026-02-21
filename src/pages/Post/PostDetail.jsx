@@ -68,7 +68,7 @@ export default function PostDetail() {
   if (loading) return <p className="loading-text">로딩 중...</p>;
   if (!post) return null;
 
-  const isAuthor = user?.nickName === post.nickName;
+  const isAuthor = user?.email === post.email;
 
   return (
     <div className="post-detail">

@@ -24,7 +24,7 @@ export default function MeetingDetail() {
     const fetchMeeting = async () => {
       try {
         const response = await meetingApi.getOne(meetingId);
-        setMeeting(response.data);
+        setMeeting(response.data.data);
       } catch (err) {
         alert('모임을 불러올 수 없습니다.');
         navigate('/group');
@@ -41,7 +41,7 @@ export default function MeetingDetail() {
       await meetingApi.join(meetingId);
       alert('모임에 참여했습니다!');
       const response = await meetingApi.getOne(meetingId);
-      setMeeting(response.data);
+      setMeeting(response.data.data);
     } catch (err) {
       alert(err.response?.data?.message || '모임 참여에 실패했습니다.');
     } finally {

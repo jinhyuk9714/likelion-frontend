@@ -18,7 +18,7 @@ export default function Total() {
       setLoading(true);
       try {
         const response = await meetingApi.getList(page, selectedCategory);
-        const data = response.data;
+        const data = response.data.data;
         setMeetings(data.content || []);
         setTotalPages(data.totalPages || 0);
       } catch (err) {
